@@ -3,7 +3,7 @@ import pandas as pd
 import os
 from io import BytesIO
 from sklearn.impute import SimpleImputer
-import pandas_profiling
+from ydata_profiling import ProfileReport
 from streamlit_pandas_profiling import st_profile_report
 
 st.set_page_config(page_title="AI Data Sweeper", layout="wide")
@@ -30,7 +30,7 @@ if uploaded_files:
         
         st.subheader("📊 Data Profiling Report")
         if st.checkbox(f"Generate AI Analysis for {file.name}"):
-            profile = df.profile_report()
+            profile = ProfileReport(df, title="Profiling Report")
             st_profile_report(profile)
 
         st.subheader("🛠️ AI-Based Data Cleaning")
