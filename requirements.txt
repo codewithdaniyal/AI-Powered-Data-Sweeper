@@ -6,4 +6,3 @@ streamlit-pandas-profiling
 openpyxl
 pydantic<2.0  # Ensure compatibility
 pydantic-settings  # Required for newer Pydantic versions
-class-doc  # If this package fails, remove it
