@@ -1,8 +1,6 @@
 streamlit
 pandas
 scikit-learn
-ydata-profiling>=4.1.0
+pandas-profiling
 streamlit-pandas-profiling
 openpyxl
-pydantic>=2.0.0
-pydantic-settings>=2.0.0
