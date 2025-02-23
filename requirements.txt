@@ -1,7 +1,7 @@
 streamlit
 pandas
 scikit-learn
-pandas-profiling==3.6.6
+pandas-profiling==3.2.0
 streamlit-pandas-profiling
 openpyxl
 pydantic<2.0  # Ensure compatibility with pandas-profiling
