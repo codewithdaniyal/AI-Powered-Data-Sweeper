@@ -1,0 +1,6 @@
+streamlit
+pandas
+scikit-learn
+pandas-profiling
+streamlit-pandas-profiling
+openpyxl
