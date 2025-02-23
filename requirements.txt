@@ -1,8 +1,8 @@
 streamlit
 pandas
 scikit-learn
-ydata-profiling  # Replaces deprecated pandas-profiling
+ydata-profiling  # Replaces pandas-profiling
 streamlit-pandas-profiling
 openpyxl
-pydantic<2.0  # Ensure compatibility
-pydantic-settings  # Required for newer Pydantic versions
+pydantic<2.0
+pydantic-settings
