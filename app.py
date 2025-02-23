@@ -3,8 +3,6 @@ import pandas as pd
 import os
 from io import BytesIO
 from sklearn.impute import SimpleImputer
-from pandas_profiling import ProfileReport  # Changed this line
-from streamlit_pandas_profiling import st_profile_report
 
 st.set_page_config(page_title="AI Data Sweeper", layout="wide")
 
@@ -26,18 +24,42 @@ if uploaded_files:
             continue
         
         st.write(f"**📄 File Name:** {file.name}")
-        st.dataframe(df.head())
         
-        st.subheader("📊 Data Profiling Report")
-        if st.checkbox(f"Generate AI Analysis for {file.name}"):
-            profile = ProfileReport(df, title=f"Profiling Report - {file.name}")  # Modified this line
-            st_profile_report(profile)
+        # Display basic statistics
+        st.subheader("📊 Data Overview")
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.write("Sample Data:")
+            st.dataframe(df.head())
+            
+        with col2:
+            st.write("Basic Statistics:")
+            st.write(f"- Total Rows: {len(df)}")
+            st.write(f"- Total Columns: {len(df.columns)}")
+            st.write("- Missing Values:")
+            missing_stats = df.isnull().sum()
+            for col, missing in missing_stats[missing_stats > 0].items():
+                st.write(f"  • {col}: {missing} missing values")
 
         st.subheader("🛠️ AI-Based Data Cleaning")
         if st.checkbox(f"Apply AI Cleaning to {file.name}"):
-            imputer = SimpleImputer(strategy='mean')
-            df[df.select_dtypes(include=['number']).columns] = imputer.fit_transform(df.select_dtypes(include=['number']))
-            st.write("✅ Missing values filled using AI-based mean imputation.")
+            # Handle numeric columns
+            numeric_cols = df.select_dtypes(include=['number']).columns
+            if len(numeric_cols) > 0:
+                imputer = SimpleImputer(strategy='mean')
+                df[numeric_cols] = imputer.fit_transform(df[numeric_cols])
+                st.write("✅ Missing numeric values filled using AI-based mean imputation.")
+            
+            # Handle categorical columns
+            categorical_cols = df.select_dtypes(exclude=['number']).columns
+            if len(categorical_cols) > 0:
+                cat_imputer = SimpleImputer(strategy='most_frequent')
+                df[categorical_cols] = cat_imputer.fit_transform(df[categorical_cols])
+                st.write("✅ Missing categorical values filled using most frequent value.")
+            
+            st.write("Cleaned Data Preview:")
+            st.dataframe(df.head())
             
         st.subheader("🔄 Convert & Download")
         conversion_type = st.radio(f"Convert {file.name} to:", ["CSV", "Excel"], key=file.name)
@@ -52,6 +74,9 @@ if uploaded_files:
                 file_name = file.name.replace(file_extension, ".xlsx")
                 mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             buffer.seek(0)
-            st.download_button(f"⬇️ Download {file.name} as {conversion_type}", data=buffer, file_name=file_name, mime=mime_type)
+            st.download_button(f"⬇️ Download {file.name} as {conversion_type}", 
+                             data=buffer, 
+                             file_name=file_name, 
+                             mime=mime_type)
 
 st.success("🎉 AI Cleaning & Conversion Completed!")
